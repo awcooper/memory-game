@@ -8,7 +8,7 @@ class App extends Component {
     constructor(props){
         super(props);
         this.state = {
-            words: ''
+            words: []
         }
     }
 
@@ -22,10 +22,11 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">{ words }</h1>
+          <h1 className="App-title">Welcome To My Little Word Game</h1>
         </header>
-        <p className="App-intro">
-        </p>
+          <div>
+              { words.map( (word) => ( <h3> { word } </h3>) ) }
+          </div>
       </div>
     );
   }
