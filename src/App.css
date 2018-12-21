@@ -2,6 +2,20 @@
   text-align: center;
 }
 
+#settings {
+  padding: 20px;
+  width: 800px;
+}
+
+#settings input {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#gameBox{
+  width: 300px;
+}
+
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
