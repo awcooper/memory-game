@@ -13,6 +13,7 @@ class App extends Component {
           time: 60, //Time in seconds
           gamePhase: 'settings',
           currentGameWords: [],
+          mode: 'order'
       }
    };
 
@@ -24,7 +25,7 @@ class App extends Component {
         event.preventDefault();
         const name = event.target.name;
         const value = event.target.value;
-        this.setState({[`${name}`]: value})
+        this.setState({[`${name}`]: value}, () => console.log(this.state))
     }
 
    getRandomElements(n, l){
@@ -33,17 +34,35 @@ class App extends Component {
        return shuffled.slice(0,n);
    }
 
+   playGame = () => {
+       setTimeout(() => {
+           this.setState({gamePhase: 'play'});
+           this.tickInterval = setInterval(this.tick.bind(this), 1000);
+
+       }, 1000)
+   };
+
    buildGame = () => {
        const { words, numberOfWords, time } = this.state;
        this.setState({
            timeRemaining: time,
-           gamePhase: 'play',
+           gamePhase: 'getReady',
            currentGameWords: this.getRandomElements(numberOfWords,words)
-       });
+       }, this.playGame);
    };
 
+
+   tick(){
+       const { time } = this.state;
+       this.setState( { time: time - 1 });
+       if (time === 0) {
+           clearInterval(this.tickInterval);
+           this.setState({gamePhase: 'settings'});
+       }
+   }
+
    render() {
-     const { time, numberOfWords, gamePhase, currentGameWords } = this.state;
+     const { time, numberOfWords, gamePhase, currentGameWords, mode } = this.state;
      return (
        <div className="App">
          <header className="App-header">
@@ -52,7 +71,7 @@ class App extends Component {
         </header>
            <div>
                { gamePhase == 'settings' && ( <div id="settings">
-                   <input
+                   <h3> Time: </h3><input
                        type="number"
                        name="time"
                        min="1"
@@ -61,8 +80,7 @@ class App extends Component {
                        value={time}
                        onChange={this.handleChange.bind(this)}
                    />
-                   <br/>
-                   <input
+                   <h3> Words: </h3> <input
                        type="number"
                        name="numberOfWords"
                        min="1"
@@ -70,20 +88,35 @@ class App extends Component {
                        value={numberOfWords}
                        onChange={this.handleChange.bind(this)}
                     />
-                   <br/>
+                   <h3> Mode: </h3> <select name="mode" onChange={this.handleChange.bind(this)}>
+                       <option value="order">order</option>
+                       <option value="any">any</option>
+                   </select>
                    <button name="start" onClick={this.buildGame}>START</button>
-                   <h3> { time } </h3>
-                   <h3> { numberOfWords } </h3>
                </div> )}
                { gamePhase === 'play'  && (
                    <div id="gameBox">
-                    <input type="text" name="input"/>
-                     <ol>
-                         { currentGameWords.map( (word, i) => <li key={i}>{ word }</li>) }
-                     </ol>
+                       { time }
+                       <input
+                        type="text"
+                        name="input"
+                        onChange={this.handleChange.bind(this)}
+                    />
+                       { mode == 'order' ? (
+                           <ol>
+                               {currentGameWords.map((word, i) => <li key={i}>{word}</li>)}
+                           </ol> ) : (
+                           <ul>
+                               {currentGameWords.map((word, i) => <li key={i}>{word}</li>)}
+                           </ul> )
+                       }
                   </div>
                   )
               }
+               { gamePhase === 'getReady'  && (
+                   <h3>Get READY</h3>
+               )
+               }
           </div>
       </div>
     );

@@ -12,7 +12,14 @@
   margin-right: 10px;
 }
 
+#settings h3 {
+  display: inline-block;
+  width: auto;
+  padding: 0 5px 0 5px;
+}
+
 #gameBox{
+  padding: 20px;
   width: 300px;
 }
 
