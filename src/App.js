@@ -21,6 +21,8 @@ class App extends Component {
        getAllWords().then(( { data: { words } } ) => this.setState({ words }))
    }
 
+   delay = t => new Promise(resolve => setTimeout(resolve, t));
+
     handleChange(event) {
         event.preventDefault();
         const name = event.target.name;
@@ -35,11 +37,13 @@ class App extends Component {
    }
 
    playGame = () => {
-       setTimeout(() => {
-           this.setState({gamePhase: 'play'});
-           this.tickInterval = setInterval(this.tick.bind(this), 1000);
-
-       }, 1000)
+        this.delay(2000)
+            .then( () => this.setState({gamePhase: 'set'}))
+            .then( () => this.delay(1000))
+            .then( () => {
+            this.setState({gamePhase: 'play'}) ;
+            this.tickInterval = setInterval(this.tick.bind(this), 1000);
+       })
    };
 
    buildGame = () => {
@@ -115,6 +119,10 @@ class App extends Component {
               }
                { gamePhase === 'getReady'  && (
                    <h3>Get READY</h3>
+               )
+               }
+               { gamePhase === 'set'  && (
+                   <h3>Get Set!</h3>
                )
                }
           </div>
